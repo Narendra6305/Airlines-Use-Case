@@ -59,46 +59,29 @@ text
 │                       - PII Masking                            │
 └─────────────────────────────────────────────────────────────────┘
 
+## 📁 Project Structure
 
-📁 Project Structure
+### Core Files
+- `Use_Case_Airlines.ipynb` - Main pipeline notebook
+- `UseCase - Airlines.xlsx` - Source data
+- `requirements.txt` - Python dependencies
+- `README.md` - Project documentation
+- `LICENSE.txt` - MIT License
 
-airlines-pipeline/
-│
-├── Use_Case_Airlines.ipynb          # Main pipeline notebook
-├── UseCase - Airlines.xlsx           # Source data
-├── requirements.txt                  # Dependencies
-├── README.md                         # This file
-│
-├── Documentation/
-│   └── Airlines_Data_Pipeline_Documentation.docx
-│
-├── storage/
-│   ├── bronze/                       # Raw validated data
-│   │   ├── flights_bronze.csv
-│   │   ├── bookings_bronze.csv
-│   │   ├── passengers_bronze.csv
-│   │   └── payments_bronze.csv
-│   ├── silver/                       # Cleaned masked data
-│   │   ├── flights_silver.csv
-│   │   ├── bookings_silver.csv
-│   │   ├── passengers_silver.csv
-│   │   └── payments_silver.csv
-│   ├── gold/                         # Business ready data
-│   │   ├── dim_flights.csv
-│   │   ├── dim_passengers.csv
-│   │   ├── dim_payments.csv
-│   │   └── fact_bookings.csv
-│   └── quarantine/                   # Invalid records
-│       ├── flights_quarantine.csv
-│       ├── bookings_quarantine.csv
-│       ├── passengers_quarantine.csv
-│       └── payments_quarantine.csv
-│
-└── Dashboards/                       # Visualization outputs
-    ├── 1.Duration_analysis.png
-    ├── 2.Route_performance.png
-    ├── 3.Airline_Trends.png
-    └── 4.Delay&Anamoloy.png
+### Documentation
+- `Documentation/Airlines_Data_Pipeline_Documentation.docx`
+
+### Storage Layers
+- `storage/bronze/` - Raw validated data
+- `storage/silver/` - Cleaned masked data
+- `storage/gold/` - Business ready data
+- `storage/quarantine/` - Invalid records
+
+### Dashboards
+- `Dashboards/1.Duration_analysis.png`
+- `Dashboards/2.Route_performance.png`
+- `Dashboards/3.Airline_Trends.png`
+- `Dashboards/4.Delay&Anamoloy.png`
 
 
 
