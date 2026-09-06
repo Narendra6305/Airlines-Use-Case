@@ -29,34 +29,38 @@ pip install -r requirements.txt
 Run the Pipeline
 bash
 jupyter notebook
-# Open Use_Case_Airlines.ipynb
-# Run all cells sequentially
-📊 Key Results
-Metric	Value
-Total Revenue	$7,385,142.98
-Average Ticket Price	$8,009.92
-Cancellation Rate	30.46%
-Total Flights	272
-Average Duration	164.62 mins (2.74 hrs)
-Data Quality	97.3% clean records
-🏗️ Architecture
-text
+### Open Use_Case_Airlines.ipynb
+### Run all cells sequentially
+## 📊 Key Results
+
+| Metric | Value |
+|--------|-------|
+| Total Revenue | $7,385,142.98 |
+| Average Ticket Price | $8,009.92 |
+| Cancellation Rate | 30.46% |
+| Total Flights | 272 |
+| Average Duration | 164.62 mins (2.74 hrs) |
+| Data Quality | 97.3% clean records |
+
+## 🏗️ Architecture
+
+### Medallion Architecture
 ┌─────────────────────────────────────────────────────────────────┐
-│                       Medallion Architecture                    │
+│ Medallion Architecture │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  📥 BRONZE LAYER        🔄 SILVER LAYER       📊 GOLD LAYER    │
-│  ┌─────────────┐       ┌─────────────┐       ┌─────────────┐  │
-│  │ Raw Data    │ ────► │ Cleaned     │ ────► │ Business    │  │
-│  │ + DQ Flags  │       │ Data        │       │ Ready Data  │  │
-│  │ + Errors    │       │ + PII       │       │ + KPIs      │  │
-│  └─────────────┘       └─────────────┘       └─────────────┘  │
-│                                                                 │
-│  Validation Engine    Transformation Engine   Star Schema      │
-│  - PK Checks          - Duration Calc        - Dimensions     │
-│  - Type Checks        - Overnight Handling   - Fact Table     │
-│  - Rule Checks        - Airline Imputation   - Aggregations   │
-│                       - PII Masking                            │
+│ │
+│ BRONZE LAYER SILVER LAYER GOLD LAYER │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ Raw Data │ ──► │ Cleaned │ ──► │ Business │ │
+│ │ + DQ Flags │ │ Data │ │ Ready Data │ │
+│ │ + Errors │ │ + PII │ │ + KPIs │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ │
+│ │
+│ Validation Engine Transformation Engine Star Schema │
+│ - PK Checks - Duration Calc - Dimensions │
+│ - Type Checks - Overnight Handling - Fact Table │
+│ - Rule Checks - Airline Imputation - Aggregations │
+│ - PII Masking │
 └─────────────────────────────────────────────────────────────────┘
 
 ## 📁 Project Structure
