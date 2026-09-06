@@ -1,0 +1,95 @@
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           DATA SOURCE LAYER                                 │
+│                    UseCase - Airlines.xlsx (Excel File)                     │
+│         ┌──────────┬──────────┬────────────┬──────────────┐                │
+│         │ Flights  │ Bookings │ Passengers │  Payments    │                │
+│         └──────────┴──────────┴────────────┴──────────────┘                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         BRONZE LAYER (Raw Data)                             │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  Data Quality & Validation Engine                                  │    │
+│  │  • Primary Key Validation                                          │    │
+│  │  • Data Type Validation                                            │    │
+│  │  • Business Rule Validation                                        │    │
+│  │  • Error Detection & Categorization                                │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│  ┌─────────────────────────────┐    ┌─────────────────────────────────┐   │
+│  │   Clean Records (Bronze)     │    │   Corrupted Records (DLQ)       │   │
+│  │   flights_bronze.csv         │    │   flights_quarantine.csv        │   │
+│  │   bookings_bronze.csv        │    │   bookings_quarantine.csv       │   │
+│  │   passengers_bronze.csv      │    │   passengers_quarantine.csv     │   │
+│  │   payments_bronze.csv        │    │   payments_quarantine.csv       │   │
+│  └─────────────────────────────┘    └─────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         SILVER LAYER (Cleaned Data)                        │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  Transformation & PII Masking Engine                               │    │
+│  │  • Duration Calculation                                            │    │
+│  │  • Overnight Flight Handling                                       │    │
+│  │  • Airline Imputation                                              │    │
+│  │  • PII Masking (SHA-256, Masking)                                  │    │
+│  │  • Data Type Standardization                                       │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
+│  │ Flights  │  │ Bookings │  │Passengers│  │ Payments │                   │
+│  │  Silver  │  │  Silver  │  │  Silver  │  │  Silver  │                   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          GOLD LAYER (Business Ready)                       │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  Star Schema Data Modelling                                        │    │
+│  │  • Dimension Tables: dim_flights, dim_passengers, dim_payments    │    │
+│  │  • Fact Table: fact_bookings                                      │    │
+│  │  • Business KPI Computation                                        │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│  ┌──────────────┐  ┌──────────────────┐  ┌──────────────────────┐         │
+│  │dim_flights   │  │dim_passengers    │  │dim_payments          │         │
+│  │• flight_id   │  │• passenger_id    │  │• payment_id          │         │
+│  │• airline     │  │• first_name      │  │• booking_id          │         │
+│  │• source      │  │• last_name       │  │• amount              │         │
+│  │• destination │  │• age             │  │• payment_method      │         │
+│  │• duration    │  │• gender          │  └──────────────────────┘         │
+│  └──────────────┘  │• email_masked    │                                    │
+│                    │• phone_masked    │                                    │
+│                    │• aadhaar_hashed  │                                    │
+│                    └──────────────────┘                                    │
+│                                ▲                                            │
+│                                │                                            │
+│                    ┌───────────┴───────────┐                               │
+│                    │  fact_bookings        │                               │
+│                    │  • booking_id         │                               │
+│                    │  • passenger_id (FK)  │                               │
+│                    │  • flight_id (FK)     │                               │
+│                    │  • payment_id (FK)    │                               │
+│                    │  • booking_date       │                               │
+│                    │  • status             │                               │
+│                    │  • seat_number        │                               │
+│                    └───────────────────────┘                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      BUSINESS INTELLIGENCE LAYER                           │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  KPIs & Analytics                                                 │    │
+│  │  • Total Revenue: $7.385M                                         │    │
+│  │  • Average Duration: 164.62 mins                                  │    │
+│  │  • Average Ticket Price: $8,009.92                               │    │
+│  │  • Cancellation Rate: 30.46%                                     │    │
+│  │  • Route Performance Analysis                                     │    │
+│  │  • Airline Market Share                                          │    │
+│  │  • Payment Method Distribution                                    │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────────────┘

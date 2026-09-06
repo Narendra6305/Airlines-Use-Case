@@ -1,0 +1,50 @@
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                    DATA FLOW                                        │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+    INPUT                     PROCESSING                    OUTPUT
+    Excel                     Pipeline                     Storage
+
+┌─────────────────┐  ┌──────────────────────┐  ┌─────────────────────────────┐
+│   flights       │  │   1. Data Ingestion   │  │   storage/bronze/flights/   │
+│   sheet         │──┤   & Validation        │──│   flights_bronze.csv        │
+│                 │  │  ┌────────────────┐   │  │                             │
+│   bookings      │  │  │ Data Quality  │   │  │   storage/quarantine/        │
+│   sheet         │──┤  │ - PK Checks   │   │  │   flights_quarantine.csv    │
+│                 │  │  │ - Type Checks │   │  │                             │
+│   passengers    │  │  │ - Rule Checks │   │  │   storage/bronze/bookings/   │
+│   sheet         │──┤  │ - Error Flag  │   │  │   bookings_bronze.csv       │
+│                 │  │  └────────────────┘   │  │                             │
+│   payments      │  │                       │  │   storage/bronze/passengers/ │
+│   sheet         │──┤   2. Transformation   │  │   passengers_bronze.csv     │
+│                 │  │   & Cleaning          │  │                             │
+└─────────────────┘  │  ┌────────────────┐   │  │   storage/bronze/payments/   │
+                     │  │ • Duration     │   │  │   payments_bronze.csv       │
+                     │  │   Calculation  │   │  │                             │
+                     │  │ • Overnight    │   │  └─────────────────────────────┘
+                     │  │   Handling     │   │             │
+                     │  │ • Airline      │   │             ▼
+                     │  │   Imputation   │   │  ┌─────────────────────────────┐
+                     │  │ • PII Masking  │   │  │   storage/silver/flights/   │
+                     │  └────────────────┘   │  │   flights_silver.csv        │
+                     │                       │  │                             │
+                     │   3. Data Modelling   │  │   storage/silver/bookings/   │
+                     │  ┌────────────────┐   │  │   bookings_silver.csv       │
+                     │  │ • Star Schema  │   │  │                             │
+                     │  │ • Dimension    │   │  │   storage/silver/passengers/ │
+                     │  │   Tables       │   │  │   passengers_silver.csv     │
+                     │  │ • Fact Table   │   │  │                             │
+                     │  │ • KPI Comput-  │   │  │   storage/silver/payments/   │
+                     │  │   ation        │   │  │   payments_silver.csv       │
+                     │  └────────────────┘   │  │                             │
+                     │                       │  └─────────────────────────────┘
+                     │                       │             │
+                     │                       │             ▼
+                     │                       │  ┌─────────────────────────────┐
+                     │                       │  │   storage/gold/             │
+                     │                       │  │   dim_flights.csv           │
+                     │                       │  │   dim_passengers.csv         │
+                     │                       │  │   dim_payments.csv           │
+                     │                       │  │   fact_bookings.csv          │
+                     │                       │  └─────────────────────────────┘
+                     └──────────────────────┘

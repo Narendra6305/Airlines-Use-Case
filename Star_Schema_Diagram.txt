@@ -1,0 +1,105 @@
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                              STAR SCHEMA MODEL                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────┐      ┌──────────────────────────────────────┐
+│     DIM_FLIGHTS              │      │     FACT_BOOKINGS                    │
+│  ┌────────────────────────┐  │      │  ┌────────────────────────────────┐  │
+│  │ flight_id (PK)         │  │◄─────│──│ flight_id (FK)                 │  │
+│  │ airline                │  │      │  │ booking_id (PK)                │  │
+│  │ source                 │  │      │  │ passenger_id (FK)              │  │
+│  │ destination            │  │      │  │ payment_id (FK)                │  │
+│  │ route                  │  │      │  │ booking_date                   │  │
+│  │ departure_time         │  │      │  │ status                         │  │
+│  │ arrival_time           │  │      │  │ seat_number                    │  │
+│  │ duration_minutes       │  │      │  │ passport_number                │  │
+│  │ duration_bucket        │  │      │  │ emergency_contact              │  │
+│  └────────────────────────┘  │      │  └────────────────────────────────┘  │
+└──────────────────────────────┘      └──────────────────────────────────────┘
+              ▲                                      ▲
+              │                                      │
+              │                                      │
+┌──────────────────────────────┐      ┌──────────────────────────────────────┐
+│     DIM_PASSENGERS           │      │     DIM_PAYMENTS                     │
+│  ┌────────────────────────┐  │      │  ┌────────────────────────────────┐  │
+│  │ passenger_id (PK)      │  │◄─────│──│ passenger_id (FK)             │  │
+│  │ first_name             │  │      │  │ payment_id (PK)                │  │
+│  │ last_name              │  │      │  │ booking_id (FK)                │  │
+│  │ age                    │  │      │  │ amount                         │  │
+│  │ gender                 │  │      │  │ payment_method                 │  │
+│  │ email (masked)         │  │      │  └────────────────────────────────┘  │
+│  │ phone (masked)         │  │      └──────────────────────────────────────┘
+│  │ aadhaar_id (hashed)    │  │
+│  │ date_of_birth          │  │
+│  └────────────────────────┘  │
+└──────────────────────────────┘
+
+
+TABLE DEFINITIONS:
+
+================================================================================
+DIM_FLIGHTS - Flight Dimension Table
+================================================================================
+column_name        | data_type    | description
+-------------------|--------------|---------------------------
+flight_id          | VARCHAR(50)  | Primary Key
+airline            | VARCHAR(50)  | Airline name
+source             | VARCHAR(10)  | Departure airport code
+destination        | VARCHAR(10)  | Arrival airport code
+route              | VARCHAR(30)  | Source -> Destination
+departure_time     | TIMESTAMP    | Scheduled departure
+arrival_time       | TIMESTAMP    | Scheduled arrival
+duration_minutes   | DECIMAL(10,2)| Flight duration in mins
+duration_bucket    | VARCHAR(20)  | <2H, 2-3H, >3H
+
+================================================================================
+DIM_PASSENGERS - Passenger Dimension Table
+================================================================================
+column_name        | data_type    | description
+-------------------|--------------|---------------------------
+passenger_id       | VARCHAR(50)  | Primary Key
+first_name         | VARCHAR(50)  | First name
+last_name          | VARCHAR(50)  | Last name
+age                | INTEGER      | Age in years
+gender             | VARCHAR(10)  | MALE/FEMALE
+email              | VARCHAR(100) | MASKED email
+phone              | VARCHAR(20)  | MASKED phone
+aadhaar_id         | VARCHAR(64)  | SHA-256 hashed
+date_of_birth      | DATE         | Date of birth
+
+================================================================================
+DIM_PAYMENTS - Payment Dimension Table
+================================================================================
+column_name        | data_type    | description
+-------------------|--------------|---------------------------
+payment_id         | VARCHAR(50)  | Primary Key
+booking_id         | VARCHAR(50)  | Foreign Key to booking
+amount             | DECIMAL(10,2)| Payment amount
+payment_method     | VARCHAR(20)  | UPI, CARD, NETBANKING
+
+================================================================================
+FACT_BOOKINGS - Fact Table (Central Transaction Table)
+================================================================================
+column_name              | data_type    | description
+-------------------------|--------------|---------------------------
+booking_id               | VARCHAR(50)  | Primary Key
+passenger_id             | VARCHAR(50)  | FK to passengers
+flight_id                | VARCHAR(50)  | FK to flights
+payment_id               | VARCHAR(50)  | FK to payments
+booking_date             | DATE         | Booking date
+status                   | VARCHAR(20)  | CONFIRMED/CANCELLED/PENDING
+seat_number              | VARCHAR(10)  | Allocated seat
+passport_number          | VARCHAR(64)  | SHA-256 hashed
+emergency_contact_name   | VARCHAR(100) | Emergency contact
+emergency_contact_phone  | VARCHAR(20)  | MASKED phone
+
+
+RELATIONSHIPS:
+================================================================================
+dim_flights.flight_id  ←───┐
+                            ├── fact_bookings.flight_id
+dim_passengers.passenger_id ←───┐
+                                 ├── fact_bookings.passenger_id
+dim_payments.payment_id   ←───┐
+                                 ├── fact_bookings.payment_id
+================================================================================
