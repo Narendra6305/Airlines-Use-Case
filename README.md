@@ -58,8 +58,10 @@ text
 │  - Rule Checks        - Airline Imputation   - Aggregations   │
 │                       - PII Masking                            │
 └─────────────────────────────────────────────────────────────────┘
+
+
 📁 Project Structure
-text
+
 airlines-pipeline/
 │
 ├── Use_Case_Airlines.ipynb          # Main pipeline notebook
@@ -97,6 +99,9 @@ airlines-pipeline/
     ├── 2.Route_performance.png
     ├── 3.Airline_Trends.png
     └── 4.Delay&Anamoloy.png
+
+
+
 🔒 Privacy & Security
 PII Protection Methods
 Field	Protection	Method
@@ -106,21 +111,22 @@ Aadhaar ID	Hashing	SHA-256
 Passport	Hashing	SHA-256
 Access Control
 Bronze Layer: Data Engineering Team
-
 Silver Layer: Analytics Team
 
 Gold Layer: Business Users
+## 📈 Business KPIs
 
-📈 Business KPIs
-Route Performance
-Route	Bookings	% of Total
-CCU → DEL	267	20.86%
-DEL → BOM	210	16.41%
-MAA → BOM	187	14.61%
-BOM → CCU	172	13.44%
-DEL → HYD	104	8.13%
-Others	340	26.55%
-Total	1,280	100%
+### Route Performance
+
+| Route | Bookings | % of Total |
+|-------|----------|------------|
+| CCU → DEL | 267 | 20.86% |
+| DEL → BOM | 210 | 16.41% |
+| MAA → BOM | 187 | 14.61% |
+| BOM → CCU | 172 | 13.44% |
+| DEL → HYD | 104 | 8.13% |
+| Others | 340 | 26.55% |
+| **Total** | **1,280** | **100%** |
 Payment Distribution
 UPI: Highest Usage
 
@@ -136,13 +142,18 @@ Storage	CSV Files
 PII Protection	hashlib (SHA-256)
 Development	Jupyter Notebook
 Documentation	Markdown/Word
-📊 Data Quality Summary
-Entity	Total	Clean	Quarantined	Quality Rate
-Flights	1,020	1,020	0	100%
-Bookings	1,000	970	30	97%
-Passengers	1,039	1,039	0	100%
-Payments	1,000	922	78	92.2%
-Total	4,059	3,951	108	97.3%
+
+
+
+## 📊 Data Quality Summary
+
+| Entity | Total | Clean | Quarantined | Quality Rate |
+|--------|-------|-------|-------------|--------------|
+| Flights | 1,020 | 1,020 | 0 | 100% |
+| Bookings | 1,000 | 970 | 30 | 97% |
+| Passengers | 1,039 | 1,039 | 0 | 100% |
+| Payments | 1,000 | 922 | 78 | 92.2% |
+| **Total** | **4,059** | **3,951** | **108** | **97.3%** |
 🔄 Data Flow
 text
 Source Excel → Bronze (DQ) → Silver (Transform) → Gold (Model) → BI
